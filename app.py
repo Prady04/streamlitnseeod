@@ -7,6 +7,8 @@ from pathlib import Path
 import random
 import streamlit as st
 
+st.title("MarktStraat")
+c1 = st.container()
 def isUrlValid(url):
     try:
         requests.get(url, timeout = 5)
@@ -74,7 +76,7 @@ def brainy(from_date,to_date):
             ib['TIMESTAMP'] = pd.to_datetime(ib['TIMESTAMP'], dayfirst=True,infer_datetime_format=True).dt.strftime('%d-%b-%Y')
             ib.drop(labels=8,axis=0,inplace=True)
             ib=ib.head(26)
-            result = result.append(ib)
+            result = pd.concat([result,ib],axis = 0)
             result.to_csv('C:\\Trading Stuff\\bhavcopy\\fno\\' + filename, header =False,index = False )
            
             txt.write("Data Successfully writen for 👉 " + dMMyFormatUpperCase)
@@ -85,13 +87,13 @@ def brainy(from_date,to_date):
             st.write("Oops!  Error in " , e  )
             pass
     return 0
-st.title("MarktStraat")
+
 with st.sidebar:
     from_date = st.date_input("From")
     to_date = st.date_input("To")
     result = st.button("Download")
     if result:
        r= brainy(from_date, to_date)
-    with st.container:
-       st.write("Boss, job complete @ " + datetime.strftime(datetime.now(),'%m%d%Y').upper() )
+       with c1:
+        st.write(" job complete @ " + datetime.strftime(datetime.now(),'%m%d%Y').upper() )
 
