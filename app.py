@@ -82,12 +82,15 @@ def brainy(from_date,to_date):
             txt.write("Data Successfully writen for 👉 " + dMMyFormatUpperCase)
             
             
+            
             #st.write("Data Successfully writen for " + dMMyFormatUpperCase)
         except Exception as e:
             st.write("Oops!  Error in " , e  )
             pass
     return 0
 
+#def import2ami():
+    
 with st.sidebar:
     from_date = st.date_input("From")
     to_date = st.date_input("To")
@@ -95,5 +98,6 @@ with st.sidebar:
     if result:
        r= brainy(from_date, to_date)
        with c1:
+           #s = import2ami()
         st.write(" job complete @ " + datetime.strftime(datetime.now(),'%m%d%Y').upper() )
 
