@@ -1,3 +1,4 @@
+from multiprocessing import connection
 import shutil
 import pandas as pd
 from datetime import datetime
@@ -6,6 +7,31 @@ import os
 from pathlib import Path
 import random
 import streamlit as st
+from sqlite3 import connect
+import csv
+import numpy as np
+
+class Stock:
+    
+    def __init__(self, ohlc):
+        print(ohlc)
+        print('******'*5)
+        self.Name = ohlc['SYMBOL']
+        self.DT = ohlc['TIMESTAMP'] 
+        self.Open = ohlc['OPEN'] 
+        self.High = ohlc['HIGH'] 
+        self.Low = ohlc['LOW'] 
+        self.Close = ohlc['CLOSE'] 
+        self.TOTTRDQTY = ohlc['TOTTRDQTY'] 
+        self.TOTALTRADES = ohlc['TOTALTRADES'] 
+    
+def connect2db():
+    con = None
+    try: 
+        con = connect('./stocks.db')
+    except Exception as e:
+        print(e)
+    return con
 
 st.title("MarktStraat")
 c1 = st.container()
@@ -78,15 +104,33 @@ def brainy(from_date,to_date):
             ib=ib.head(26)
             result = pd.concat([result,ib],axis = 0)
             result.to_csv('C:\\Trading Stuff\\bhavcopy\\fno\\' + filename, header =False,index = False )
+            
+            insert = "INSERT INTO DATA('symbol','timestamp','open','high','low','close','volume','trades') VALUES (?,?,?,?,?,?,?,?)"
+            con = connect2db()
+            cur = con.cursor()
+            
+            #result[['SYMBOL','TIMESTAMP','OPEN','HIGH','LOW','CLOSE','TOTTRDQTY','TOTALTRADES',]]
+            result['OPEN'] = pd.to_numeric(result['OPEN'], errors='coerce')
+            result['HIGH'] = pd.to_numeric(result['HIGH'], errors='coerce')
+            result['LOW'] = pd.to_numeric(result['LOW'], errors='coerce')
+            result['CLOSE'] = pd.to_numeric(result['CLOSE'], errors='coerce')
+            result['TOTTRDQTY'] = pd.to_numeric(result['TOTTRDQTY'], errors='coerce')
+            result['TOTALTRADES'] = pd.to_numeric(result['TOTALTRADES'], errors='coerce')
+            
+            for index, row in result.iterrows():
+                cur.execute(insert,(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7]))
+            con.commit()
+            con.close()     
+          
+
            
             txt.write("Data Successfully writen for 👉 " + dMMyFormatUpperCase)
-            
-            
-            
-            #st.write("Data Successfully writen for " + dMMyFormatUpperCase)
+
         except Exception as e:
+            con.close()
             st.write("Oops!  Error in " , e  )
             pass
+        
     return 0
 
 #def import2ami():
