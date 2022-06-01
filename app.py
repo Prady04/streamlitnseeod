@@ -10,6 +10,7 @@ import streamlit as st
 from sqlite3 import connect
 import csv
 import numpy as np
+from ami2py import AmiDataBase, SymbolEntry
 
 class Stock:
     
@@ -108,6 +109,8 @@ def brainy(from_date,to_date):
             insert = "INSERT INTO DATA('symbol','timestamp','open','high','low','close','volume','trades') VALUES (?,?,?,?,?,?,?,?)"
             con = connect2db()
             cur = con.cursor()
+            #db_folder = 'C:\\Program Files\\AmiBroker\\Databases\\Crypto\\'
+            #db = AmiDataBase(db_folder)
             
             #result[['SYMBOL','TIMESTAMP','OPEN','HIGH','LOW','CLOSE','TOTTRDQTY','TOTALTRADES',]]
             result['OPEN'] = pd.to_numeric(result['OPEN'], errors='coerce')
@@ -119,9 +122,12 @@ def brainy(from_date,to_date):
             
             for index, row in result.iterrows():
                 cur.execute(insert,(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7]))
+            #db.append_symbol_data()
             con.commit()
             con.close()     
-          
+
+            
+            #st.write(db.get_symbols())
 
            
             txt.write("Data Successfully writen for 👉 " + dMMyFormatUpperCase)
@@ -144,4 +150,5 @@ with st.sidebar:
        with c1:
            #s = import2ami()
         st.write(" job complete @ " + datetime.strftime(datetime.now(),'%m%d%Y').upper() )
+
 
