@@ -18,7 +18,7 @@ import pythoncom
 import glob
 from win32com.client import Dispatch
 import logging
-import js2py
+
 
 
 
@@ -62,20 +62,7 @@ def import_data(ab, lst):
         ab.RefreshAll()
         ab.Quit()
         print("Done..")
-class Stock:
-    
-    def __init__(self, ohlc):
-        print(ohlc)
-        print('******'*5)
-        self.Name = ohlc['SYMBOL']
-        self.DT = ohlc['TIMESTAMP'] 
-        self.Open = ohlc['OPEN'] 
-        self.High = ohlc['HIGH'] 
-        self.Low = ohlc['LOW'] 
-        self.Close = ohlc['CLOSE'] 
-        self.TOTTRDQTY = ohlc['TOTTRDQTY'] 
-        self.TOTALTRADES = ohlc['TOTALTRADES'] 
-    
+
 def connect2db():
     con = None
     try: 
@@ -188,7 +175,7 @@ def brainy(from_date,to_date):
         
     return 0
 
-#def import2ami():
+
     
 with st.sidebar:
     from_date = st.date_input("From")
@@ -196,7 +183,7 @@ with st.sidebar:
     result = st.button("Download")
     if result:
        r= brainy(from_date, to_date)
-       #js2py.eval_js('ami.js')
+      
        
               
        with c1:
