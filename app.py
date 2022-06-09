@@ -203,7 +203,7 @@ with st.sidebar:
         st.write("preparing to import to amibroker")
         ab = win32com.client.Dispatch('Broker.Application', pythoncom.CoInitialize())
         success = import_data(ab, imp_tbl)
-        if success:
-            st.write(" job complete @ " + datetime.strftime(datetime.now(),'%m%d%Y').upper() )
+        st.write("completed {}".format(success))
+        st.write(" job complete @ " + datetime.strftime         (datetime.now(),'%m%d%Y').upper() )
 
 
