@@ -21,9 +21,7 @@ import logging
 
 
 
-
-logging.basicConfig(level=logging.DEBUG)
-
+logging.basicConfig(filename='./st.log', encoding='utf-8', level=logging.DEBUG)
 
 
 imp_tbl = [
@@ -34,6 +32,7 @@ imp_tbl = [
 def import_data(ab, lst):
     ab.Visible = True
     for l in lst:
+        logging.debug("Loading database {}".format(os.path.split(l['db'])[1]))
         print("Loading database {}".format(os.path.split(l['db'])[1]))
         print(ab.LoadDatabase(l['db']))
         f_lst = sorted(set(glob.glob(l['data'])))
