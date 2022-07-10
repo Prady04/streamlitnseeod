@@ -19,6 +19,8 @@ import glob
 from win32com.client import Dispatch
 import logging
 
+from screener_scrapper import Scrapper
+
 
 
 logging.basicConfig(filename='./st.log', encoding='utf-8', level=logging.DEBUG)
@@ -72,6 +74,7 @@ def connect2db():
 
 st.title("MarktStraat")
 c1 = st.container()
+c2 = st.container()
 with c1:
     st.image("./mb.png")
 def isUrlValid(url):
@@ -174,6 +177,14 @@ def brainy(from_date,to_date):
         
     return 0
 
+def screen_stocks():
+    scrapper = Scrapper('https://www.screener.in/screens/732464/eps-gainers/')
+    
+    df = scrapper.process() 
+    with c2:         
+        st.dataframe(df)
+
+    
 
     
 with st.sidebar:
@@ -192,4 +203,6 @@ with st.sidebar:
         st.write("completed {}".format(success))
         st.write(" job complete @ " + datetime.strftime         (datetime.now(),'%m%d%Y').upper() )
 
-
+    funda = st.button('Screen high EPS Stocks')
+    if funda:
+        screen_stocks()
