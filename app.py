@@ -119,8 +119,15 @@ def brainy(from_date,to_date):
          
         
             url_bhav = 'https://archives.nseindia.com/content/historical/EQUITIES/'+ year + '/' + monthUppercase +'/cm' +dMMyFormatUpperCase+'bhav.csv.zip'
+            fallback = './cm'+dMMyFormatUpperCase+'bhav.csv.zip'
+            try: 
+                content = requests.get(url_bhav, timeout=(5, 10)).content
+                data2 = pd.read_csv(url_bhav) 
+            except requests.exceptions.Timeout as e:
+                st.write("Timed out while querying NSE Server..trying fallback")
+                data2 = pd.read_csv(fallback) 
             
-            data2 = pd.read_csv(url_bhav) 
+                
             
             
             df = data2.query('SERIES == "EQ"  or SERIES == "BE"')
@@ -178,10 +185,11 @@ def brainy(from_date,to_date):
     return 0
 
 def screen_stocks():
+    
     scrapper = Scrapper('https://www.screener.in/screens/732464/eps-gainers/')
     
     df = scrapper.process() 
-    with c2:         
+    with c2:            
         st.dataframe(df)
 
     
@@ -193,7 +201,6 @@ with st.sidebar:
     result = st.button("Download")
     if result:
        r= brainy(from_date, to_date)
-      
        
               
        with c1:
